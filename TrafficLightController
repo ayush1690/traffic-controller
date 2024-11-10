@@ -3,10 +3,10 @@ import java.util.Random;
 public class TrafficLightController {
 
     // Class to control traffic light changes
-    static class TrafficLightController {
+    static class TrafficLight {
         private String currentLight;
 
-        public TrafficLightController() {
+        public TrafficLight() {
             this.currentLight = "RED";  // Initialize the light to red in the constructor.
         }
 
@@ -44,7 +44,7 @@ public class TrafficLightController {
     }
 
     public static void main(String[] args) {
-        TrafficLightController trafficLight = new TrafficLightController();
+        TrafficLight trafficLight = new TrafficLight();
         EmergencyVehicleDetector emergencyDetector = new EmergencyVehicleDetector();
         TrafficDensityDetector densityDetector = new TrafficDensityDetector();
 
