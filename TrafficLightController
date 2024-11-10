@@ -1,0 +1,135 @@
+import java.util.Random;
+
+public class TrafficLightController {
+
+    // Class to control traffic light changes
+    static class TrafficLightController {
+        private String currentLight;
+
+        public TrafficLightController() {
+            this.currentLight = "RED";  // Initialize the light to red in the constructor.
+        }
+
+        // Method to get the current light
+        public String getCurrentLight() {
+            return currentLight;
+        }
+
+        // Method to change the light
+        public void changeLight(String newLight) {
+            currentLight = newLight;
+            System.out.println("Traffic Light: " + newLight);
+        }
+    }
+
+    // Class to simulate emergency vehicle detection using image sensors
+    static class EmergencyVehicleDetector {
+        // Simulate the detection of emergency vehicles (image recognition)
+        public boolean detectEmergencyVehicle() {
+            Random random = new Random();
+            // 20% chance of detecting an emergency vehicle
+            return random.nextInt(100) < 20; // Simulate 20% chance of detecting an emergency vehicle
+        }
+    }
+
+    // Class to simulate traffic density detection using image sensors
+    static class TrafficDensityDetector {
+        // Simulates traffic density detection by image sensors
+        public int detectTrafficDensity() {
+            Random random = new Random();
+            // Simulate image processing to estimate vehicle count
+            // Higher density (values closer to 100) indicates more vehicles
+            return random.nextInt(100); // Simulate 0 to 100 vehicles in the intersection
+        }
+    }
+
+    public static void main(String[] args) {
+        TrafficLightController trafficLight = new TrafficLightController();
+        EmergencyVehicleDetector emergencyDetector = new EmergencyVehicleDetector();
+        TrafficDensityDetector densityDetector = new TrafficDensityDetector();
+
+        System.out.println("Starting traffic control system...\n");
+
+        // Run the traffic system endlessly
+        while (true) {
+            System.out.println("Current Light: " + trafficLight.getCurrentLight());
+
+            // Simulate traffic density detection based on images
+            int trafficDensity = densityDetector.detectTrafficDensity();
+            System.out.println("Traffic density detected (from image sensor): " + trafficDensity + " vehicles.");
+
+            // High traffic density handling
+            if (trafficDensity > 60) { // If high traffic density
+                System.out.println("High traffic density detected! Keeping GREEN light for more time.");
+                trafficLight.changeLight("GREEN");
+                try {
+                    Thread.sleep(5000); // Keep green for 5 seconds because of heavy traffic
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                }
+                trafficLight.changeLight("YELLOW");
+                try {
+                    Thread.sleep(1000); // Yellow for 1 second
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                }
+                trafficLight.changeLight("RED");
+            } else { // If traffic density is low, proceed with normal cycle
+                System.out.println("Low traffic density. Proceeding with normal cycle.");
+                trafficLight.changeLight("GREEN"); // Green light for 2 seconds
+                try {
+                    Thread.sleep(2000);
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                }
+                trafficLight.changeLight("YELLOW");
+                try {
+                    Thread.sleep(1000); // Yellow light for 1 second
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                }
+                trafficLight.changeLight("RED");
+            }
+
+            // Emergency vehicle detection at the end of the cycle
+            System.out.println("\nChecking for emergency vehicle detection...");
+            boolean isEmergencyDetected = emergencyDetector.detectEmergencyVehicle();
+            if (isEmergencyDetected) {
+                System.out.println("Emergency vehicle detected! Changing light to GREEN for emergency.");
+
+                // Keep the light green until no emergency vehicle is detected
+                while (isEmergencyDetected) {
+                    trafficLight.changeLight("GREEN");  // Keep the light green until emergency vehicle passes
+                    try {
+                        Thread.sleep(1000); // Wait every second till the emergency vehicle is detected
+                    } catch (InterruptedException e) {
+                        Thread.currentThread().interrupt();
+                    }
+
+                    // Re-check if emergency vehicle is still detected
+                    isEmergencyDetected = emergencyDetector.detectEmergencyVehicle();
+
+                    // Once no emergency vehicle is detected, switch to YELLOW and then RED
+                    if (!isEmergencyDetected) {
+                        System.out.println("Emergency vehicle has passed.");
+                        trafficLight.changeLight("YELLOW"); // Switch to yellow before RED
+                        try {
+                            Thread.sleep(1000); // Wait for 1 second before switching to RED
+                        } catch (InterruptedException e) {
+                            Thread.currentThread().interrupt();
+                        }
+                        trafficLight.changeLight("RED"); // Switch to RED
+                        System.out.println("Switching light to RED.");
+                    }
+                }
+            }
+
+            // Wait before starting the next cycle
+            try {
+                Thread.sleep(2000); // Wait for 2 seconds before next cycle
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+        }
+    }
+}
